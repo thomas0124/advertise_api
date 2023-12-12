@@ -2,18 +2,13 @@ from fastapi import FastAPI, File, UploadFile
 import easyocr
 from PIL import Image
 import io
+import cv2
+from test import get_status
 
 app = FastAPI()
 
 reader = easyocr.Reader(['en'])  # 'en'は英語の言語コードです
 
-@app.get("/")
-def read_root():
-    return {"message": "Hello World!"}
-
-@app.post("/uploadfile/")
-async def create_upload_file(file: UploadFile = File(...)):
-    return {"filename": file.filename}
 
 @app.post("/extract_text/")
 async def extract_text_from_image(file: UploadFile = File(...)):
@@ -27,3 +22,9 @@ async def extract_text_from_image(file: UploadFile = File(...)):
     extracted_text = ' '.join([entry[1] for entry in result])
 
     return {"extracted_text": extracted_text}
+
+@app.post("/status/")
+async def status(file: UploadFile = File(...)):
+    file_path =  file.filename
+    img_input = cv2.imread(file_path)
+    return {"status": get_status(img_input)}
