@@ -6,7 +6,7 @@ from typing import List
 import easyocr
 
 
-reader = easyocr.Reader(['ja', 'en'], gpu=False)  # 'ja' 'en'は英語の言語コードです
+reader = easyocr.Reader(['ja', 'en'], gpu=True)  # 'ja' 'en'は英語の言語コードです
 
 app = FastAPI()
 
