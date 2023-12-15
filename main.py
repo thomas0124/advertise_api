@@ -3,10 +3,6 @@ import cv2
 import numpy as np
 from pathlib import Path
 from typing import List
-import easyocr
-
-
-reader = easyocr.Reader(['ja', 'en'], gpu=True)  # 'ja' 'en'は英語の言語コードです
 
 app = FastAPI()
 
@@ -52,15 +48,6 @@ def get_status(img_raw):
     showimg[:,:] = [ave[0],ave[1],ave[2]] if use_ave else [mode[0],mode[1],mode[2]]
     return calculate_status(showimg[0][0][0], use_ave, ave, median, mode, gray_var)
 
-def extract_text_from_image(file):
-    result = reader.readtext(file)
-    result_ex = ' '.join([entry[1] for entry in result])
-    print(result_ex)
-    if result:
-        return 1
-    else:
-        return None
-
 @app.post("/status/")
 async def status(files: List[UploadFile] = File(...)):
     try:
@@ -75,13 +62,10 @@ async def status(files: List[UploadFile] = File(...)):
 
         # Read the saved file using OpenCV
         img_input = cv2.imread(str(file_location))
-
-        if (extract_text_from_image(img_input) != None):
-            # Get status using your existing function
-            status = get_status(img_input)
-            return {"status": status}
-        else:
-            return None
+        
+        status = get_status(img_input)
+        
+        return {"status": status}
 
     except Exception as e:
         return {"error": str(e)}
