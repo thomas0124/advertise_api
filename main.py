@@ -27,7 +27,7 @@ def get_status(img_raw):
         return ave, median, mode
 
     def calculate_status(h, use, ave, median, mode, gray_var):
-        type_list: str = ['炎','光','草', '水', '闇']
+        type_list: str = ['Red','Yellow','Green', 'Blue', 'Keyplate']
         h += 30*use
         chara_type = type_list[0] if (162<h or h<=18) else type_list[1] if np.sum(h) == 0 and mode[2] >= 126 else type_list[4] if np.sum(h) == 0 else [type_list[i+1] for i in range(4) if (i+1)*36-18<h and h<=(i+1)*36+18][0]
         HP = int(((3000-1000)/255)*ave[2] + 1000)
